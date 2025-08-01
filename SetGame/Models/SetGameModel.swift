@@ -141,7 +141,7 @@ class SetGameModel{
 ///
 /// The enums `ShapeType`, `ShapeColor`, and `ShapeShading` conform to `CaseIterable`,
 /// allowing generation of all possible combinations to form a full deck (81 cards).
-
+/// 
 enum ShapeType: CaseIterable {
     case rhombus, rectangle, square
 }

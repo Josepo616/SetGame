@@ -19,7 +19,7 @@ import SwiftUI
 /// - Includes feedback text and control buttons for gameplay actions
 ///
 /// Requires an external `SetGameViewModel` to manage state and logic
- 
+/// 
 struct SetGameView: View {
     @ObservedObject var viewModel: SetGameViewModel
     var body: some View {

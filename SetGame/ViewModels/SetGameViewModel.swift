@@ -7,22 +7,20 @@
 
 import SwiftUI
 // MARK: - Set Game ViewModel
-
-
 /// Acts as the intermediary between the `SetGameModel` and the View layer in an MVVM architecture
 ///
 /// `SetGameViewModel` exposes the list of shapes and UI-specific state (e.g., number of visible cards)
 /// and handles user interactions like selecting cards or starting a new game
-
+///
 /// Key responsibilities:
 /// - Synchronizes View updates manually via `objectWillChange` after selection
 /// - Manages how many cards are visible (`cardsToShow`) and controls the logic for adding more
 /// - Bridges model-level logic (`SetGameModel`) with View concerns, including color translation and match feedback
-
+///
 /// Important details:
 /// - Uses an internal flag (`ChooseAndMakeSet`) to track if a valid set was just made, avoiding extra logic/state for that in the View
 /// - Supports user feedback via `showSetMaked()`, giving string status on the current selection
- 
+///
 class SetGameViewModel: ObservableObject {
     @Published var cardsToShow: Int = 12
     private var ChooseAndMakeSet: Bool? = nil
@@ -31,8 +29,6 @@ class SetGameViewModel: ObservableObject {
     var shapes: [Shape] {
         setGameModel.shapes
     }
-
-    init() {}
     
     func choose(_ shape: Shape) {
         ChooseAndMakeSet = setGameModel.choose(shape)
@@ -58,7 +54,6 @@ class SetGameViewModel: ObservableObject {
         }
     }
 
-
     func startNewGame() {
         setGameModel = SetGameModel()
         cardsToShow = 12
@@ -77,7 +72,6 @@ class SetGameViewModel: ObservableObject {
     }
     
     // MARK: View - Automatic size scaling
-    
     /// Calculates the optimal width for a grid item to fit a given number of items
     /// within a container of a certain size, preserving a specified aspect ratio
     ///
