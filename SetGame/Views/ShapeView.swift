@@ -48,7 +48,6 @@ struct ShapeItemView: View {
                     GeometryReader { geo in
                         let cardWidth = geo.size.width
                         let cardHeight = geo.size.height * CGFloat(shape.count)
-
                         let shapeWidth = cardWidth * 0.6
                         let shapeHeight = cardHeight * 0.50
 

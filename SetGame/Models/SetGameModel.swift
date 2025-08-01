@@ -118,7 +118,7 @@ class SetGameModel{
                 }
             }
         }
-        return deck
+        return deck.shuffled()
     }
 }
 

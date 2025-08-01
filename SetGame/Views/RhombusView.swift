@@ -28,8 +28,6 @@ import SwiftUI
 /// - The closure accepts the width and height of the frame and calculates the four points:
 ///   Top, Right, Bottom, and Left, and then closes the path.
 /// ```
-
-
 struct RhombusView: View {
     var filled: Bool = false
     var color: Color
