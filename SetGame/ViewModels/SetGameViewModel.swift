@@ -25,7 +25,6 @@ class SetGameViewModel: ObservableObject {
     @Published var cardsToShow: Int = 12
     private var ChooseAndMakeSet: Bool? = nil
     private var setGameModel = SetGameModel()
-    static var themes: [ShapeType] = [.rhombus, .rectangle, .square]
     var shapes: [Shapes] {
         setGameModel.shapes
     }

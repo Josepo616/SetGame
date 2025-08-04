@@ -46,66 +46,60 @@ struct SetGameView: View {
         }
     }
     
-    /// A responsive and adaptive grid displaying the current cards in the game.
+    /// A responsive and adaptive grid displaying the current active (unmatched) cards in the game.
     ///
-    /// This view adapts its layout based on the number of visible (unmatched) cards:
-    /// - For fewer than 30 cards: Uses a `GeometryReader` to dynamically calculate the
-    ///   optimal grid item width using `gridItemWidthThatFits`, maintaining a consistent
-    ///   aspect ratio and tight, responsive layout.
-    /// - For 30 or more cards: Switches to a `ScrollView` with fixed item sizing,
-    ///   allowing vertical scrolling and preserving performance and clarity.
+    /// This view adjusts its layout and scrolling behavior based on the number of cards shown:
+    /// - For fewer than 30 cards:
+    ///   - Uses a `GeometryReader` to calculate a dynamic grid item width via
+    ///     `gridItemWidthThatFits`, maintaining a consistent aspect ratio and maximizing space usage.
+    ///   - Scrolling is disabled to allow a compact, responsive grid that fits within available space.
+    /// - For 30 or more cards:
+    ///   - Applies a fixed item size (80 pts wide) for each grid item to ensure visual consistency.
+    ///   - Enables vertical scrolling to accommodate the larger set of cards without cramping the layout.
     ///
-    /// Additional behaviors:
-    /// - Matched cards are filtered out (not rendered).
-    /// - Each card is tappable and connected to game logic through the ViewModel.
-    /// - The layout uses `LazyVGrid` with adaptive columns in both modes.
+    /// Additional features:
+    /// - Filters out matched cards to avoid rendering them.
+    /// - Cards are rendered in a `LazyVGrid` using adaptive columns, ensuring responsive wrapping.
+    /// - Each card is tappable and triggers game logic through the ViewModel's `choose` method.
+    /// - The view structure remains unified, avoiding code duplication by leveraging `scrollDisabled(_:)`.
     ///
     var cards: some View {
-        Group{
-            if viewModel.shapes.prefix(viewModel.cardsToShow).filter({ !$0.isMatched }).count < 30 {
-                GeometryReader { geometry in
-                    let gridItemSize = viewModel.gridItemWidthThatFits(
-                        count: viewModel.shapes.prefix(viewModel.cardsToShow).filter { !$0.isMatched }.count,
-                        size: geometry.size,
-                        atAspectRatio: 1/3
-                    )
-                    LazyVGrid(
-                        columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 8)],
-                        spacing: 8
-                    ) {
-                        ForEach(viewModel.shapes.prefix(viewModel.cardsToShow).filter { !$0.isMatched }) { shape in
-                            ShapeItemView(shape: shape, viewModel: viewModel)
-                                .frame(width: gridItemSize, height: gridItemSize / (2/3))
-                                .background(Color.white)
-                                .cornerRadius(10)
-                                .shadow(radius: 2)
-                                .onTapGesture {
-                                    viewModel.choose(shape)
-                                }
-                        }
-                    }
-                    .padding(8)
-                }
-            } else {
-                ScrollView {
-                    LazyVGrid(
-                        columns: [GridItem(.adaptive(minimum: 80), spacing: 8)], spacing: 8
-                    ) {
-                        ForEach(viewModel.shapes.prefix(viewModel.cardsToShow).filter { !$0.isMatched }) { shape in
-                            ShapeItemView(shape: shape, viewModel: viewModel)
-                                .frame(width: 50, height: 50 / (2/3))
-                                .background(Color.white)
-                                .cornerRadius(10)
-                                .shadow(radius: 2)
-                                .onTapGesture {
-                                    viewModel.choose(shape)
-                                }
-                        }
+        GeometryReader { geometry in
+            let visibleCards = viewModel.shapes
+                .prefix(viewModel.cardsToShow)
+                .filter { !$0.isMatched }
+
+            let shouldScroll = visibleCards.count >= 30
+            let gridItemSize = shouldScroll
+                ? 80.0
+                : viewModel.gridItemWidthThatFits(
+                    count: visibleCards.count,
+                    size: geometry.size,
+                    atAspectRatio: 1/3
+                )
+
+            ScrollView(.vertical) {
+                LazyVGrid(
+                    columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 8)],
+                    spacing: 8
+                ) {
+                    ForEach(visibleCards) { shape in
+                        ShapeItemView(shape: shape, viewModel: viewModel)
+                            .frame(width: gridItemSize, height: gridItemSize / (2/3))
+                            .background(Color.white)
+                            .cornerRadius(10)
+                            .shadow(radius: 2)
+                            .onTapGesture {
+                                viewModel.choose(shape)
+                            }
                     }
                 }
+                .padding(8)
             }
+            .scrollDisabled(!shouldScroll)
         }
     }
+
 }
 
 #Preview {

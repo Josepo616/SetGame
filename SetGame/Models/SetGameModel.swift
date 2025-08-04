@@ -42,7 +42,7 @@ class SetGameModel{
         let selectedCards = shapes.filter { $0.isSelected }
         
         if selectedCards.count == 3 {
-            if self.isValidSet(selectedCards) {
+            if isValidSet(selectedCards) {
                 for selected in selectedCards {
                     if let matchIndex = shapes.firstIndex(where: { $0.id == selected.id }) {
                         shapes[matchIndex].isMatched = true
