@@ -15,7 +15,7 @@ import Foundation
 /// pattern an d is designed to be observed by SwiftUI
 ///
 class SetGameModel{
-    var shapes: [Shape] = []
+    var shapes: [Shapes] = []
     
     init() {
         shapes = createDeck()
@@ -37,7 +37,7 @@ class SetGameModel{
     ///   - `false` if 3 cards were selected but did **not** form a valid set.
     ///   - `nil` if fewer than 3 cards are currently selected (no set validation was performed).
     ///
-    func choose(_ card: Shape) -> Bool? {
+    func choose(_ card: Shapes) -> Bool? {
         guard let index = shapes.firstIndex(where: { $0.id == card.id }) else { return false }
         let selectedCards = shapes.filter { $0.isSelected }
         
@@ -79,7 +79,7 @@ class SetGameModel{
     /// - Parameter cards: An array of exactly three `Shape` instances.
     /// - Returns: `true` if the cards form a valid Set; `false` otherwise.
     ///
-    private func isValidSet(_ cards: [Shape]) -> Bool {
+    private func isValidSet(_ cards: [Shapes]) -> Bool {
         guard cards.count == 3 else { return false }
 
         let allTypes = Set(cards.map { $0.type })
@@ -107,13 +107,13 @@ class SetGameModel{
     ///
     /// - Returns: An array of all possible 'Shape' combinations shuffled
     ///
-    private func createDeck() -> [Shape] {
-        var deck: [Shape] = []
+    private func createDeck() -> [Shapes] {
+        var deck: [Shapes] = []
         for type in ShapeType.allCases {
             for color in ShapeColor.allCases {
                 for shading in ShapeShading.allCases {
                     for count in 1...3 {
-                        deck.append(Shape(type: type, color: color, shading: shading, count: count))
+                        deck.append(Shapes(type: type, color: color, shading: shading, count: count))
                     }
                 }
             }
@@ -154,7 +154,7 @@ enum ShapeShading: CaseIterable {
     case filled, empty, striped
 }
 
-struct Shape: Identifiable, Equatable {
+struct Shapes: Identifiable, Equatable {
     let id = UUID()
     let type: ShapeType
     let color: ShapeColor

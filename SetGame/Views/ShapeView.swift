@@ -31,7 +31,7 @@ import SwiftUI
 /// custom rendering logic per shape and shading type
 ///
 struct ShapeItemView: View {
-    var shape: Shape
+    var shape: Shapes
     var viewModel: SetGameViewModel
     
     var body: some View {
@@ -84,7 +84,8 @@ struct ShapeItemView: View {
         case .filled:
             switch type {
             case .rhombus:
-                RhombusView(filled: true, color: viewModel.color(from: shape.color))
+                RhombusShape()
+                    .foregroundColor(viewModel.color(from: shape.color))
             case .rectangle:
                 rectangleConstant
                     .foregroundColor(viewModel.color(from: shape.color))
@@ -96,7 +97,8 @@ struct ShapeItemView: View {
         case .empty:
             switch type {
             case .rhombus:
-                RhombusView(filled: false, color: viewModel.color(from: shape.color))
+                RhombusShape()
+                    .stroke(viewModel.color(from: shape.color))
             case .rectangle:
                 RoundedRectangle(cornerRadius: 10)
                     .strokeBorder(viewModel.color(from: shape.color), lineWidth: 2)
@@ -109,10 +111,13 @@ struct ShapeItemView: View {
         case .striped:
             switch type {
             case .rhombus:
-                RhombusView(color: viewModel.color(from: shape.color))
+                RhombusShape()
+                    .stroke(viewModel.color(from: shape.color)) // borde
                     .overlay(
-                        RhombusView(filled: true, color: viewModel.color(from: shape.color).opacity(0.3))
+                        RhombusShape()
+                            .fill(viewModel.color(from: shape.color).opacity(0.3)) // relleno superpuesto
                     )
+
             case .rectangle:
                 rectangleConstant
                     .foregroundColor(viewModel.color(from: shape.color).opacity(0.3))

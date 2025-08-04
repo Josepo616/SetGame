@@ -26,11 +26,11 @@ class SetGameViewModel: ObservableObject {
     private var ChooseAndMakeSet: Bool? = nil
     private var setGameModel = SetGameModel()
     static var themes: [ShapeType] = [.rhombus, .rectangle, .square]
-    var shapes: [Shape] {
+    var shapes: [Shapes] {
         setGameModel.shapes
     }
     
-    func choose(_ shape: Shape) {
+    func choose(_ shape: Shapes) {
         ChooseAndMakeSet = setGameModel.choose(shape)
         objectWillChange.send()
         if ChooseAndMakeSet == true {
