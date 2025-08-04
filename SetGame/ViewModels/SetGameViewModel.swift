@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 // MARK: - Set Game ViewModel
 /// Acts as the intermediary between the `SetGameModel` and the View layer in an MVVM architecture
 ///
@@ -28,7 +29,7 @@ class SetGameViewModel: ObservableObject {
     var shapes: [Shapes] {
         setGameModel.shapes
     }
-    
+
     func choose(_ shape: Shapes) {
         ChooseAndMakeSet = setGameModel.choose(shape)
         objectWillChange.send()
@@ -36,7 +37,7 @@ class SetGameViewModel: ObservableObject {
             addMoreCards()
         }
     }
-    
+
     /// Returns a status message based on the current selection state
     ///
     /// - Returns: `"Set is removed"` if a valid set was found, `"Not a set"` if 3 are selected but invalid, or an empty string otherwise
@@ -57,11 +58,11 @@ class SetGameViewModel: ObservableObject {
         setGameModel = SetGameModel()
         cardsToShow = 12
     }
-    
+
     func addMoreCards(_ count: Int = 3) {
         cardsToShow = min(cardsToShow + count, shapes.count)
     }
-    
+
     func color(from shapeColor: ShapeColor) -> Color {
         switch shapeColor {
         case .red: return .red
@@ -69,7 +70,7 @@ class SetGameViewModel: ObservableObject {
         case .blue: return .blue
         }
     }
-    
+
     // MARK: View - Automatic size scaling
     /// Calculates the optimal width for a grid item to fit a given number of items
     /// within a container of a certain size, preserving a specified aspect ratio
@@ -89,17 +90,17 @@ class SetGameViewModel: ObservableObject {
     ) -> CGFloat {
         let count = CGFloat(count)
         var columnCount = 1.0
-        
+
         repeat {
             let witdth = (size.width / columnCount)
             let height = witdth / aspectRatio
-            
+
             let rowCount = (count / columnCount).rounded(.up)
             if rowCount * height < size.height {
                 return (size.width / columnCount).rounded(.down)
             }
-        columnCount += 1
-    }while columnCount < count
+            columnCount += 1
+        } while columnCount < count
         return min(size.width / count, size.height * aspectRatio).rounded(.down)
     }
 }

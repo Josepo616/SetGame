@@ -14,13 +14,13 @@ import Foundation
 /// selection logic, and validation for identifying valid sets. It follows the MVVM
 /// pattern an d is designed to be observed by SwiftUI
 ///
-class SetGameModel{
+class SetGameModel {
     var shapes: [Shapes] = []
-    
+
     init() {
         shapes = createDeck()
     }
-    
+
     /// Handles the selection of a card by the user.
     ///
     /// This method updates the selection state of cards and determines whether a valid set
@@ -38,13 +38,17 @@ class SetGameModel{
     ///   - `nil` if fewer than 3 cards are currently selected (no set validation was performed).
     ///
     func choose(_ card: Shapes) -> Bool? {
-        guard let index = shapes.firstIndex(where: { $0.id == card.id }) else { return false }
+        guard let index = shapes.firstIndex(where: { $0.id == card.id }) else {
+            return false
+        }
         let selectedCards = shapes.filter { $0.isSelected }
-        
+
         if selectedCards.count == 3 {
             if isValidSet(selectedCards) {
                 for selected in selectedCards {
-                    if let matchIndex = shapes.firstIndex(where: { $0.id == selected.id }) {
+                    if let matchIndex = shapes.firstIndex(where: {
+                        $0.id == selected.id
+                    }) {
                         shapes[matchIndex].isMatched = true
                         shapes[matchIndex].isSelected = false
                     }
@@ -54,7 +58,9 @@ class SetGameModel{
 
             } else {
                 for selected in selectedCards {
-                    if let deselectIndex = shapes.firstIndex(where: { $0.id == selected.id }) {
+                    if let deselectIndex = shapes.firstIndex(where: {
+                        $0.id == selected.id
+                    }) {
                         shapes[deselectIndex].isSelected = false
                     }
                 }
@@ -63,7 +69,7 @@ class SetGameModel{
             }
         }
         shapes[index].isSelected.toggle()
-        
+
         return nil
     }
 
@@ -113,7 +119,14 @@ class SetGameModel{
             for color in ShapeColor.allCases {
                 for shading in ShapeShading.allCases {
                     for count in 1...3 {
-                        deck.append(Shapes(type: type, color: color, shading: shading, count: count))
+                        deck.append(
+                            Shapes(
+                                type: type,
+                                color: color,
+                                shading: shading,
+                                count: count
+                            )
+                        )
                     }
                 }
             }
@@ -141,7 +154,7 @@ class SetGameModel{
 ///
 /// The enums `ShapeType`, `ShapeColor`, and `ShapeShading` conform to `CaseIterable`,
 /// allowing generation of all possible combinations to form a full deck (81 cards).
-/// 
+///
 enum ShapeType: CaseIterable {
     case rhombus, rectangle, square
 }

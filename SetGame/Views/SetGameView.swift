@@ -19,33 +19,36 @@ import SwiftUI
 /// - Includes feedback text and control buttons for gameplay actions
 ///
 /// Requires an external `SetGameViewModel` to manage state and logic
-/// 
+///
 struct SetGameView: View {
     @ObservedObject var viewModel: SetGameViewModel
     var body: some View {
-        VStack{
-            VStack{
-                VStack{
+        VStack {
+            VStack {
+                VStack {
                     cards
-                        .animation(.smooth(duration: 0.5), value: viewModel.shapes)
+                        .animation(
+                            .smooth(duration: 0.5),
+                            value: viewModel.shapes
+                        )
                 }
             }
             .imageScale(.large)
             .padding()
-            HStack{
+            HStack {
                 Text("\(viewModel.showSetMaked())")
             }
-            HStack{
-                Button("Add cards"){
+            HStack {
+                Button("Add cards") {
                     viewModel.addMoreCards(3)
                 }
-                Button("New game"){
+                Button("New game") {
                     viewModel.startNewGame()
                 }
             }
         }
     }
-    
+
     /// A responsive and adaptive grid displaying the current active (unmatched) cards in the game.
     ///
     /// This view adjusts its layout and scrolling behavior based on the number of cards shown:
@@ -68,24 +71,29 @@ struct SetGameView: View {
             let visibleCards = viewModel.shapes
                 .prefix(viewModel.cardsToShow)
                 .filter { !$0.isMatched }
-
             let shouldScroll = visibleCards.count >= 30
-            let gridItemSize = shouldScroll
+            let gridItemSize =
+                shouldScroll
                 ? 80.0
                 : viewModel.gridItemWidthThatFits(
                     count: visibleCards.count,
                     size: geometry.size,
-                    atAspectRatio: 1/3
+                    atAspectRatio: 1 / 3
                 )
-
+            
             ScrollView(.vertical) {
                 LazyVGrid(
-                    columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 8)],
+                    columns: [
+                        GridItem(.adaptive(minimum: gridItemSize), spacing: 8)
+                    ],
                     spacing: 8
                 ) {
                     ForEach(visibleCards) { shape in
                         ShapeItemView(shape: shape, viewModel: viewModel)
-                            .frame(width: gridItemSize, height: gridItemSize / (2/3))
+                            .frame(
+                                width: gridItemSize,
+                                height: gridItemSize / (2 / 3)
+                            )
                             .background(Color.white)
                             .cornerRadius(10)
                             .shadow(radius: 2)
@@ -99,7 +107,6 @@ struct SetGameView: View {
             .scrollDisabled(!shouldScroll)
         }
     }
-
 }
 
 #Preview {

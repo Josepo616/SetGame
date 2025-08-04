@@ -33,7 +33,7 @@ import SwiftUI
 struct ShapeItemView: View {
     var shape: Shapes
     var viewModel: SetGameViewModel
-    
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
@@ -41,7 +41,9 @@ struct ShapeItemView: View {
                     shape.isSelected ? Color.yellow : Color.black,
                     lineWidth: 3
                 )
-                .background(RoundedRectangle(cornerRadius: 15).fill(Color.white))
+                .background(
+                    RoundedRectangle(cornerRadius: 15).fill(Color.white)
+                )
                 .shadow(radius: 5)
             VStack {
                 ForEach(0..<shape.count, id: \.self) { _ in
@@ -53,7 +55,10 @@ struct ShapeItemView: View {
 
                         shapeView(for: shape.type, shading: shape.shading)
                             .frame(width: shapeWidth, height: shapeHeight)
-                            .position(x: geo.size.width / 2, y: geo.size.height / 2)
+                            .position(
+                                x: geo.size.width / 2,
+                                y: geo.size.height / 2
+                            )
                     }
                     .aspectRatio(1, contentMode: .fit)
                     .padding(.vertical, 4)
@@ -75,9 +80,11 @@ struct ShapeItemView: View {
     /// - `rhombus`: Uses `RhombusView`
     /// - `rectangle`: Uses `RoundedRectangle`
     /// - `square`: Uses `Rectangle`
-    /// 
+    ///
     @ViewBuilder
-    private func shapeView(for type: ShapeType, shading: ShapeShading) -> some View {
+    private func shapeView(for type: ShapeType, shading: ShapeShading)
+        -> some View
+    {
         let rectangleConstant = RoundedRectangle(cornerRadius: 10)
             .frame(width: 35, height: 8)
         switch shading {
@@ -101,37 +108,56 @@ struct ShapeItemView: View {
                     .stroke(viewModel.color(from: shape.color))
             case .rectangle:
                 RoundedRectangle(cornerRadius: 10)
-                    .strokeBorder(viewModel.color(from: shape.color), lineWidth: 2)
+                    .strokeBorder(
+                        viewModel.color(from: shape.color),
+                        lineWidth: 2
+                    )
                     .frame(width: 35, height: 8)
             case .square:
                 Rectangle()
-                    .strokeBorder(viewModel.color(from: shape.color), lineWidth: 2)
+                    .strokeBorder(
+                        viewModel.color(from: shape.color),
+                        lineWidth: 2
+                    )
                     .frame(width: 15, height: 15)
             }
         case .striped:
             switch type {
             case .rhombus:
                 RhombusShape()
-                    .stroke(viewModel.color(from: shape.color)) // borde
+                    .stroke(viewModel.color(from: shape.color))  // borde
                     .overlay(
                         RhombusShape()
-                            .fill(viewModel.color(from: shape.color).opacity(0.3)) // relleno superpuesto
+                            .fill(
+                                viewModel.color(from: shape.color).opacity(0.3)
+                            )  // relleno superpuesto
                     )
 
             case .rectangle:
                 rectangleConstant
-                    .foregroundColor(viewModel.color(from: shape.color).opacity(0.3))
+                    .foregroundColor(
+                        viewModel.color(from: shape.color).opacity(0.3)
+                    )
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .strokeBorder(viewModel.color(from: shape.color), lineWidth: 2)
+                            .strokeBorder(
+                                viewModel.color(from: shape.color),
+                                lineWidth: 2
+                            )
                     )
             case .square:
                 Rectangle()
                     .frame(width: 15, height: 15)
-                    .foregroundColor(viewModel.color(from: shape.color).opacity(0.3))
+                    .foregroundColor(
+                        viewModel.color(from: shape.color).opacity(0.3)
+                    )
                     .overlay(
                         Rectangle()
-                            .strokeBorder(viewModel.color(from: shape.color), lineWidth: 2))
+                            .strokeBorder(
+                                viewModel.color(from: shape.color),
+                                lineWidth: 2
+                            )
+                    )
             }
         }
     }
