@@ -125,12 +125,12 @@ struct ShapeItemView: View {
             switch type {
             case .rhombus:
                 RhombusShape()
-                    .stroke(viewModel.color(from: shape.color))
+                    .stroke(viewModel.color(from: shape.color))  // borde
                     .overlay(
                         RhombusShape()
                             .fill(
                                 viewModel.color(from: shape.color).opacity(0.3)
-                            )
+                            )  // relleno superpuesto
                     )
 
             case .rectangle:
