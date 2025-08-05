@@ -7,82 +7,69 @@
 
 import SwiftUI
 
-// MARK: - Set Game ViewModel
-/// Acts as the intermediary between the `SetGameModel` and the View layer in an MVVM architecture
-///
-/// `SetGameViewModel` exposes the list of shapes and UI-specific state (e.g., number of visible cards)
-/// and handles user interactions like selecting cards or starting a new game
-///
-/// Key responsibilities:
-/// - Synchronizes View updates manually via `objectWillChange` after selection
-/// - Manages how many cards are visible (`cardsToShow`) and controls the logic for adding more
-/// - Bridges model-level logic (`SetGameModel`) with View concerns, including color translation and match feedback
-///
-/// Important details:
-/// - Uses an internal flag (`ChooseAndMakeSet`) to track if a valid set was just made, avoiding extra logic/state for that in the View
-/// - Supports user feedback via `showSetMaked()`, giving string status on the current selection
-///
 class SetGameViewModel: ObservableObject {
-    @Published var cardsToShow: Int = 12
-    private var ChooseAndMakeSet: Bool? = nil
     private var setGameModel = SetGameModel()
-    var shapes: [Shapes] {
-        setGameModel.shapes
+    var activeAnimation: Bool = false
+    @Published private(set) var cards: [Card]
+    @Published private(set) var cardsRemaining: [Card]
+    @Published private(set) var cardsMatched: [Card]
+    
+    public var response = ""
+    
+    init(setGameModel: SetGameModel = SetGameModel()) {
+        self.setGameModel = setGameModel
+        self.cards = setGameModel.cardsOnScreen
+        self.cardsRemaining = setGameModel.cards
+        self.cardsMatched = setGameModel.cardsMatched
     }
-
-    func choose(_ shape: Shapes) {
-        ChooseAndMakeSet = setGameModel.choose(shape)
-        objectWillChange.send()
-        if ChooseAndMakeSet == true {
-            addMoreCards()
+    
+    func choose(_ card: Card) {
+        setGameModel.chooseAndMakeSet = setGameModel.choose(card)
+        if setGameModel.chooseAndMakeSet == true {
+            //addMoreCards(3)
+            self.cardsMatched = setGameModel.cardsMatched
         }
+        response = setGameModel.showSetMaked()
+        self.cards = setGameModel.cardsOnScreen
     }
-
-    /// Returns a status message based on the current selection state
-    ///
-    /// - Returns: `"Set is removed"` if a valid set was found, `"Not a set"` if 3 are selected but invalid, or an empty string otherwise
-    func showSetMaked() -> String {
-        switch ChooseAndMakeSet {
-        case true:
-            return "Set was removed"
-        case false:
-            return "Not a set"
-        case nil:
-            return ""
-        case .some(_):
-            return ""
-        }
-    }
-
+    
     func startNewGame() {
         setGameModel = SetGameModel()
-        cardsToShow = 12
+        setGameModel.addMoreCards(12)
+        self.cardsMatched.removeAll()
+        self.cardsRemaining = setGameModel.cards
+        self.cards = setGameModel.cardsOnScreen
+        loadCards()
+        activeAnimation = false
     }
-
-    func addMoreCards(_ count: Int = 3) {
-        cardsToShow = min(cardsToShow + count, shapes.count)
+    
+    func addMoreCards(_ count: Int) {
+        setGameModel.addMoreCards(count)
+        self.cards = setGameModel.cardsOnScreen
+        self.cardsRemaining = setGameModel.cards
     }
+    
+    func flipCardsOnScreen() {
+        for index in cards.indices {
+            cards[index].isFlipped = false
+        }
+    }
+    
+    func loadCards() {
+        flipCardsOnScreen()
+    }
+    
+}
 
-    func color(from shapeColor: ShapeColor) -> Color {
-        switch shapeColor {
+extension SetGameViewModel {
+    func color(from cardColor: CardColor) -> Color {
+        switch cardColor {
         case .red: return .red
         case .green: return .green
         case .blue: return .blue
         }
     }
 
-    // MARK: View - Automatic size scaling
-    /// Calculates the optimal width for a grid item to fit a given number of items
-    /// within a container of a certain size, preserving a specified aspect ratio
-    ///
-    /// The method tries increasing numbers of columns until it finds a layout where
-    /// all items can fit vertically within the available height
-    ///
-    /// - Parameters:
-    ///   - count: The total number of items to layout
-    ///   - size: The size of the available container (usually from `GeometryReader`)
-    ///   - aspectRatio: The desired width-to-height ratio for each grid item (e.g. 1:3)
-    /// - Returns: The maximum item width (rounded down) that fits the grid vertically
     func gridItemWidthThatFits(
         count: Int,
         size: CGSize,
