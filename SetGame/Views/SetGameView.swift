@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SetGameView: View {
-
-    @Namespace public var dealAnimation
+    @Namespace public var dealingNamespace
+    @Namespace public var matchingNamespace
     @ObservedObject var viewModel: SetGameViewModel
     var body: some View {
         VStack {
@@ -36,7 +36,6 @@ struct SetGameView: View {
                 VStack {
                     Button(action: {
                         viewModel.startNewGame()
-                        
                     }) {
                         Label("Start new game", systemImage: "hourglass.start")
                             .padding(10)
@@ -44,6 +43,7 @@ struct SetGameView: View {
                             .background(.blue)
                             .cornerRadius(20)
                     }
+
                     Button(action: {
                     }) {
                         Label("test", systemImage: "hourglass.start")
@@ -55,6 +55,8 @@ struct SetGameView: View {
                 }
                 matchedCards
                 Spacer()
+                Spacer()
+
             }
         }
     }

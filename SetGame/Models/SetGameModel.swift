@@ -23,9 +23,18 @@ class SetGameModel: ObservableObject{
             let cardsToAdd = cards.prefix(remainingCards)
             cardsOnScreen.append(contentsOf: cardsToAdd)
             cards.removeFirst(count)
-            //print(cards.count)
         }
     }
+    
+    func addMatchedCards(_ matched: [Card]) {
+        for card in matched {
+            if let index = cardsOnScreen.firstIndex(where: { $0.id == card.id }) {
+                cardsMatched.append(cardsOnScreen[index])
+                cardsOnScreen.remove(at: index)
+            }
+        }
+    }
+
 
     
     func showSetMaked() -> String {
@@ -55,10 +64,6 @@ class SetGameModel: ObservableObject{
                         cardsOnScreen[matchIndex].isMatched = true
                         cardsOnScreen[matchIndex].isSelected = false
                         cardsOnScreen[matchIndex].isFlipped = false
-
-                        let matchedCard = cardsOnScreen.remove(at: matchIndex)
-                        cardsMatched.append(matchedCard)
-                        print(cardsOnScreen[matchIndex])
                     }
                 }
                 cardsOnScreen[index].isSelected.toggle()
