@@ -7,36 +7,35 @@
 
 import Foundation
 
-class SetGameModel: ObservableObject{
+final class SetGame: ObservableObject {
     @Published var cardsOnScreen: [Card] = []
     @Published var cardsMatched: [Card] = []
-    @Published var cards: [Card] = []
+    @Published var cardsRemaining: [Card] = []
     var chooseAndMakeSet: Bool?
 
     init() {
-        cards = createDeck()
+        cardsRemaining = CardsFactory.createDeck()
     }
 
     func addMoreCards(_ count: Int) {
-        let remainingCards = min(count, cards.count)
+        let remainingCards = min(count, cardsRemaining.count)
         if remainingCards > 0 {
-            let cardsToAdd = cards.prefix(remainingCards)
+            let cardsToAdd = cardsRemaining.prefix(remainingCards)
             cardsOnScreen.append(contentsOf: cardsToAdd)
-            cards.removeFirst(count)
+            cardsRemaining.removeFirst(count)
         }
     }
-    
+
     func addMatchedCards(_ matched: [Card]) {
         for card in matched {
-            if let index = cardsOnScreen.firstIndex(where: { $0.id == card.id }) {
+            if let index = cardsOnScreen.firstIndex(where: { $0.id == card.id })
+            {
                 cardsMatched.append(cardsOnScreen[index])
                 cardsOnScreen.remove(at: index)
             }
         }
     }
 
-
-    
     func showSetMaked() -> String {
         switch chooseAndMakeSet {
         case true:
@@ -49,11 +48,13 @@ class SetGameModel: ObservableObject{
             return ""
         }
     }
-    
+
     func choose(_ card: Card) -> Bool? {
-        guard let index = cardsOnScreen.firstIndex(where: { $0.id == card.id }) else {
+        guard let index = cardsOnScreen.firstIndex(where: { $0.id == card.id })
+        else {
             return false
         }
+
         let selectedCards = cardsOnScreen.filter { $0.isSelected }
         if selectedCards.count == 3 {
             if isValidSet(selectedCards) {
@@ -73,19 +74,27 @@ class SetGameModel: ObservableObject{
                     if let deselectIndex = cardsOnScreen.firstIndex(where: {
                         $0.id == selected.id
                     }) {
-                        cardsOnScreen[deselectIndex].isSelected = false
+                        deselectCardWithDelay(index: deselectIndex, delay: 0.1)
                     }
                 }
-                cardsOnScreen[index].isSelected.toggle()
                 return false
             }
         }
         cardsOnScreen[index].isSelected.toggle()
         return nil
     }
-}
 
-extension SetGameModel {
+    func deselectCardWithDelay(index: Int, delay: Double) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            self.cardsOnScreen[index].isSelected = false
+        }
+    }
+
+    func shuffleCardsOnScreen() {
+        cardsOnScreen.shuffle()
+    }
+
+    //MARK: Private function
     private func isValidSet(_ cards: [Card]) -> Bool {
         guard cards.count == 3 else { return false }
 
@@ -101,26 +110,4 @@ extension SetGameModel {
 
         return validTypes && validColors && validCounts && validShadings
     }
-    
-    private func createDeck() -> [Card] {
-        var deck: [Card] = []
-        for type in CardType.allCases {
-            for color in CardColor.allCases {
-                for shading in CardShading.allCases {
-                    for count in 1...3 {
-                        deck.append(
-                            Card(
-                                type: type,
-                                color: color,
-                                shading: shading,
-                                count: count
-                            )
-                        )
-                    }
-                }
-            }
-        }
-        return deck
-    }
-    
 }
