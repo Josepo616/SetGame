@@ -10,6 +10,7 @@ import SwiftUI
 struct AnimationView {
     static func makeAnimations(viewModel: SetGameViewModel, zoomedCardIDs: Binding<Set<UUID>>, shakingCardIDs: Binding<Set<UUID>>) {
         if viewModel.validSet == true {
+            viewModel.abbleToTouch = false
             let matched = viewModel.cardsOnScreen.filter { $0.isMatched }
             let ids = matched.map(\.id)
 
@@ -27,6 +28,7 @@ struct AnimationView {
                         viewModel.insertMatchedCards(matched)
                         viewModel.updateCardsMatched()
                         viewModel.flipCardsOnScreen()
+                        viewModel.abbleToTouch = true
                     }
                 }
             }

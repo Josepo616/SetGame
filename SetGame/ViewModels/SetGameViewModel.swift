@@ -14,34 +14,36 @@ final class SetGameViewModel: ObservableObject {
     @Published private(set) var cardsMatched: [Card]
     private var setGame = SetGame()
     public var response = ""
-    
+    public var abbleToTouch: Bool = true
+
     init(setGame: SetGame = SetGame()) {
         self.setGame = setGame
         self.cardsOnScreen = setGame.cardsOnScreen
         self.cardsRemaining = setGame.cardsRemaining
         self.cardsMatched = setGame.cardsMatched
     }
-    
+
     func choose(_ card: Card) {
-        setGame.chooseAndMakeSet = setGame.choose(card)
+        if abbleToTouch {
+            setGame.chooseAndMakeSet = setGame.choose(card)
+        }
         if setGame.chooseAndMakeSet == true {
             self.validSet = true
-        } else if setGame.chooseAndMakeSet == false{
+        } else if setGame.chooseAndMakeSet == false {
             self.validSet = false
-        }
-        else {
+        } else {
             self.validSet = nil
         }
         response = setGame.showSetMaked()
         updateCardsOnScreen()
     }
-        
+
     func insertMatchedCards(_ matchedCard: [Card]) {
         if self.validSet == true {
             addMatchedCards(matchedCard)
         }
     }
-    
+
     func startNewGame() {
         setGame = SetGame()
         setGame.addMoreCards(12)
@@ -50,19 +52,19 @@ final class SetGameViewModel: ObservableObject {
         updateCardsOnScreen()
         flipCardsOnScreen()
     }
-    
+
     func addMoreCards(_ count: Int) {
         setGame.addMoreCards(count)
         updateCardsOnScreen()
         updateCardsRemaining()
     }
-    
+
     func addMatchedCards(_ matched: [Card]) {
         setGame.addMatchedCards(matched)
         updateCardsOnScreen()
         self.cardsMatched = setGame.cardsRemaining
     }
-    
+
     func flipCardsOnScreen() {
         for index in cardsOnScreen.indices {
             cardsOnScreen[index].isFlipped = false
@@ -73,7 +75,7 @@ final class SetGameViewModel: ObservableObject {
             }
         }
     }
-    
+
     func shuffleVisibleCards() {
         withAnimation(.easeInOut(duration: 1.6)) {
             setGame.shuffleCardsOnScreen()
@@ -81,21 +83,21 @@ final class SetGameViewModel: ObservableObject {
         updateCardsOnScreen()
         flipCardsOnScreen()
     }
-       
-// MARK: Helpers
+
+    // MARK: Helpers
     func updateCardsMatched() {
         self.cardsMatched = setGame.cardsMatched
     }
-    
+
     func updateCardsOnScreen() {
         self.cardsOnScreen = setGame.cardsOnScreen
     }
-    
+
     func updateCardsRemaining() {
         self.cardsRemaining = setGame.cardsRemaining
     }
-    
-// MARK: Functions to interact with the view
+
+    // MARK: Functions to interact with the view
     func color(from cardColor: CardColor) -> Color {
         switch cardColor {
         case .red: return .red
@@ -103,7 +105,7 @@ final class SetGameViewModel: ObservableObject {
         case .blue: return .blue
         }
     }
-    
+
     func gridItemWidthThatFits(
         count: Int,
         size: CGSize,
@@ -111,11 +113,11 @@ final class SetGameViewModel: ObservableObject {
     ) -> CGFloat {
         let count = CGFloat(count)
         var columnCount = 1.0
-        
+
         repeat {
             let witdth = (size.width / columnCount)
             let height = witdth / aspectRatio
-            
+
             let rowCount = (count / columnCount).rounded(.up)
             if rowCount * height < size.height {
                 return (size.width / columnCount).rounded(.down)
