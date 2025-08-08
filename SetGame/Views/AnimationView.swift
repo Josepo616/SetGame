@@ -48,6 +48,14 @@ struct AnimationView {
             }
         }
     }
+    
+    static func dealCardsAnimation(_ amountOfCards: Int, _ viewModel: SetGameViewModel) {
+        withAnimation(.easeInOut(duration: 0.8)) {
+            for _ in 0..<amountOfCards {
+                viewModel.addMoreCards(1)
+            }
+        }
+    }
 }
 
 struct ShakeEffect: GeometryEffect {

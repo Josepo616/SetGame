@@ -15,6 +15,7 @@ final class SetGameViewModel: ObservableObject {
     private var setGame = SetGame()
     public var response = ""
     public var abbleToTouch: Bool = true
+    public var tryCreateNewGame: Bool = false
 
     init(setGame: SetGame = SetGame()) {
         self.setGame = setGame
@@ -46,7 +47,7 @@ final class SetGameViewModel: ObservableObject {
 
     func startNewGame() {
         setGame = SetGame()
-        setGame.addMoreCards(12)
+        tryCreateNewGame = true
         self.cardsMatched.removeAll()
         updateCardsRemaining()
         updateCardsOnScreen()

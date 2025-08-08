@@ -35,7 +35,7 @@ extension SetGameView {
             }
     }
 
-    private func handleCardTapRemaining(for card: Card) {
+    public func handleCardTapRemaining(for card: Card) {
         var tryMatchInCardsRemaining: Bool = false
         if viewModel.cardsOnScreen.filter({ $0.isSelected }).count == 3 {
             if let lastUnselectedCard = viewModel.cardsOnScreen.filter({
@@ -61,20 +61,17 @@ extension SetGameView {
         }
         if tryMatchInCardsRemaining {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                withAnimation(.easeInOut(duration: 0.8)) {
-                    for _ in 0..<3 {
-                        viewModel.addMoreCards(1)
-                    }
-                    viewModel.flipCardsOnScreen()
-                }
+                AnimationView.dealCardsAnimation(3, viewModel)
             }
         } else {
-            withAnimation(.easeInOut(duration: 0.8)) {
-                for _ in 0..<3 {
-                    viewModel.addMoreCards(1)
-                }
-            }
+            AnimationView.dealCardsAnimation(3, viewModel)
+        }
+        
+        if viewModel.tryCreateNewGame {
+            AnimationView.dealCardsAnimation(12, viewModel)
+            viewModel.tryCreateNewGame = false
         }
         viewModel.flipCardsOnScreen()
+
     }
 }

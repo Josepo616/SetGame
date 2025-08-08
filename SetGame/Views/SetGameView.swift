@@ -38,6 +38,9 @@ struct SetGameView: View {
                 VStack {
                     Button(action: {
                         viewModel.startNewGame()
+                        if let firstCard = viewModel.cardsRemaining.first {
+                            handleCardTapRemaining(for: firstCard)
+                        }
                     }) {
                         Label("Start new game", systemImage: "hourglass.start")
                             .padding(10)
@@ -45,6 +48,7 @@ struct SetGameView: View {
                             .background(.blue)
                             .cornerRadius(20)
                     }
+                    //.matchedGeometryEffect(id: cards, in: dealingNamespace)
                     Button(action: {
                         viewModel.shuffleVisibleCards()
                     }) {
