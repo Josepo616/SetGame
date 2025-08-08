@@ -7,6 +7,9 @@
 
 import Foundation
 
+// MARK: - Set Game logic
+/// Manages the core logic of the Set game, including card state,
+/// matching, and deck handling. Acts as the main game controller.
 final class SetGame: ObservableObject {
     @Published var cardsOnScreen: [Card] = []
     @Published var cardsMatched: [Card] = []
@@ -84,17 +87,13 @@ final class SetGame: ObservableObject {
         return nil
     }
 
-    func deselectCardWithDelay(index: Int, delay: Double) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            self.cardsOnScreen[index].isSelected = false
-        }
-    }
-
     func shuffleCardsOnScreen() {
         cardsOnScreen.shuffle()
     }
 
     //MARK: Private function
+    /// Validates if selected cards form a correct set and
+    /// handles card deselection with optional delay.
     private func isValidSet(_ cards: [Card]) -> Bool {
         guard cards.count == 3 else { return false }
 
@@ -109,5 +108,11 @@ final class SetGame: ObservableObject {
         let validShadings = allShadings.count == 1 || allShadings.count == 3
 
         return validTypes && validColors && validCounts && validShadings
+    }
+
+    private func deselectCardWithDelay(index: Int, delay: Double) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            self.cardsOnScreen[index].isSelected = false
+        }
     }
 }

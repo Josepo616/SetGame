@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct ShapeItemView: View {
+/// View responsible for rendering an individual card,
+/// including its border, background, and shape content.
+struct CardsItemView: View {
     @ObservedObject var viewModel: SetGameViewModel
     var shape: Card
 
@@ -19,7 +21,9 @@ struct ShapeItemView: View {
                     lineWidth: 3
                 )
                 .background(
-                    RoundedRectangle(cornerRadius: 15).fill(!shape.isFlipped ? Color.white : Color.red)
+                    RoundedRectangle(cornerRadius: 15).fill(
+                        !shape.isFlipped ? Color.white : Color.red
+                    )
                 )
                 .shadow(radius: 5)
             if !shape.isFlipped {
@@ -27,10 +31,11 @@ struct ShapeItemView: View {
                     ForEach(0..<shape.count, id: \.self) { _ in
                         GeometryReader { geo in
                             let cardWidth = geo.size.width
-                            let cardHeight = geo.size.height * CGFloat(shape.count)
+                            let cardHeight =
+                                geo.size.height * CGFloat(shape.count)
                             let shapeWidth = cardWidth * 0.6
                             let shapeHeight = cardHeight * 0.5
-                            shapeView(for: shape.type, shading: shape.shading)
+                            shapeFactoryView(for: shape.type, shading: shape.shading)
                                 .frame(width: shapeWidth, height: shapeHeight)
                                 .position(
                                     x: geo.size.width / 2,

@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-extension ShapeItemView {
+/// Shape factory that builds the correct card shape and
+/// shading style based on its type and visual properties.
+extension CardsItemView {
     @ViewBuilder
-    public func shapeView(for type: CardType, shading: CardShading)
+    public func shapeFactoryView(for type: CardType, shading: CardShading)
         -> some View {
         let rectangleConstant = RoundedRectangle(cornerRadius: 10)
             .frame(width: 35, height: 8)

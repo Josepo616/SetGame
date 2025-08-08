@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// Main SwiftUI view for the Set game, displaying cards,
+/// controls, remaining deck, and matched card sections.
 struct SetGameView: View {
     @ObservedObject var viewModel: SetGameViewModel
     @Namespace public var dealingNamespace
@@ -35,6 +37,7 @@ struct SetGameView: View {
                 remainingCards
                     .padding(.leading)
                 Spacer()
+                
                 VStack {
                     Button(action: {
                         viewModel.startNewGame()
@@ -48,7 +51,6 @@ struct SetGameView: View {
                             .background(.blue)
                             .cornerRadius(20)
                     }
-                    //.matchedGeometryEffect(id: cards, in: dealingNamespace)
                     Button(action: {
                         viewModel.shuffleVisibleCards()
                     }) {
@@ -63,6 +65,7 @@ struct SetGameView: View {
                         .cornerRadius(20)
                     }
                 }
+                
                 matchedCards
                 Spacer()
             }

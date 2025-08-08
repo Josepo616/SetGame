@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// A custom SwiftUI shape that draws a rhombus,
+/// defined by four points centered in the given rect.
 struct RhombusShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()

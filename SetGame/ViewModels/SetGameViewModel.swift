@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+// MARK: - View model for Set Game
+/// ViewModel connecting the Set game logic with SwiftUI views,
+/// managing state updates, animations, and user interactions.
 final class SetGameViewModel: ObservableObject {
     @Published private(set) var validSet: Bool? = nil
     @Published private(set) var cardsOnScreen: [Card]
@@ -86,6 +89,8 @@ final class SetGameViewModel: ObservableObject {
     }
 
     // MARK: Helpers
+    /// Updates published properties to reflect the current
+    /// game state from the underlying SetGame model.
     func updateCardsMatched() {
         self.cardsMatched = setGame.cardsMatched
     }
@@ -98,7 +103,9 @@ final class SetGameViewModel: ObservableObject {
         self.cardsRemaining = setGame.cardsRemaining
     }
 
-    // MARK: Functions to interact with the view
+    // MARK: - Func for Interaction Helpers
+    /// Provides UI-related helpers like color mapping and
+    /// grid sizing calculations for dynamic layouts.
     func color(from cardColor: CardColor) -> Color {
         switch cardColor {
         case .red: return .red

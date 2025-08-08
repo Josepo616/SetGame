@@ -7,8 +7,15 @@
 
 import SwiftUI
 
+// MARK: Animations by default
+/// Handles card animations for matches, mismatches,
+/// and dealing new cards with smooth visual effects.
 struct AnimationView {
-    static func makeAnimations(viewModel: SetGameViewModel, zoomedCardIDs: Binding<Set<UUID>>, shakingCardIDs: Binding<Set<UUID>>) {
+    static func makeAnimations(
+        viewModel: SetGameViewModel,
+        zoomedCardIDs: Binding<Set<UUID>>,
+        shakingCardIDs: Binding<Set<UUID>>
+    ) {
         if viewModel.validSet == true {
             viewModel.abbleToTouch = false
             let matched = viewModel.cardsOnScreen.filter { $0.isMatched }
@@ -22,7 +29,7 @@ struct AnimationView {
                 withAnimation(.easeInOut(duration: 1)) {
                     zoomedCardIDs.wrappedValue.subtract(ids)
                 }
-                
+
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     withAnimation(.easeInOut(duration: 0.8)) {
                         viewModel.insertMatchedCards(matched)
@@ -32,7 +39,6 @@ struct AnimationView {
                     }
                 }
             }
-
         } else if viewModel.validSet == false {
             let selected = viewModel.cardsOnScreen.filter { $0.isSelected }
             let ids = selected.map(\.id)
@@ -40,7 +46,7 @@ struct AnimationView {
             withAnimation(.default) {
                 shakingCardIDs.wrappedValue.formUnion(ids)
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 withAnimation(.default) {
                     shakingCardIDs.wrappedValue.subtract(ids)
@@ -48,16 +54,23 @@ struct AnimationView {
             }
         }
     }
-    
-    static func dealCardsAnimation(_ amountOfCards: Int, _ viewModel: SetGameViewModel) {
+
+    static func dealCardsAnimation(
+        _ amountOfCards: Int,
+        _ viewModel: SetGameViewModel
+    ) {
         withAnimation(.easeInOut(duration: 0.8)) {
             for _ in 0..<amountOfCards {
                 viewModel.addMoreCards(1)
+                viewModel.flipCardsOnScreen()
             }
         }
     }
 }
 
+// MARK: - Custom Animations
+/// A custom ViewModifier that applies a horizontal shake
+/// animation, useful for indicating incorrect selections.
 struct ShakeEffect: GeometryEffect {
     var travelDistance: CGFloat = 8
     var shakesPerUnit = 3
@@ -65,9 +78,12 @@ struct ShakeEffect: GeometryEffect {
 
     func effectValue(size: CGSize) -> ProjectionTransform {
         ProjectionTransform(
-            CGAffineTransform(translationX:
-                travelDistance * sin(animatableData * .pi * CGFloat(shakesPerUnit)),
-                y: 0)
+            CGAffineTransform(
+                translationX:
+                    travelDistance
+                    * sin(animatableData * .pi * CGFloat(shakesPerUnit)),
+                y: 0
+            )
         )
     }
 }

@@ -7,6 +7,9 @@
 
 import Foundation
 
+/// CardsFactory - A utility for creating and shuffling a deck of cards.
+/// Each card is defined by a type, color, shading, and count.
+/// The `createDeck` method generates all combinations of these attributes and shuffles the deck.
 struct CardsFactory {
     static func createDeck() -> [Card] {
         var deck: [Card] = []

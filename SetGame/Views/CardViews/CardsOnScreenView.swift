@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// Displays all visible cards in a responsive grid,
+/// adjusting layout and scroll behavior dynamically.
 extension SetGameView {
     var cards: some View {
         GeometryReader { geometry in
@@ -28,8 +30,10 @@ extension SetGameView {
                     spacing: 8
                 ) {
                     ForEach(visibleCards) { card in
-                        cardView(for: card, size: gridItemSizeCalculated)
-
+                        cardsOnScreenView(
+                            for: card,
+                            size: gridItemSizeCalculated
+                        )
                     }
                 }
                 .padding(8)
@@ -38,8 +42,9 @@ extension SetGameView {
         }
     }
 
-    // MARK: - Helpers for screen cards
-
+    // MARK: Helpers for screen cards
+    /// Calculates dynamic card sizes and builds each card view
+    /// with animations, effects, and tap interactions.
     private func calculateGridItemSize(
         visibleCards: [Card],
         geometry: GeometryProxy
@@ -54,11 +59,11 @@ extension SetGameView {
     }
 
     @ViewBuilder
-    private func cardView(for card: Card, size: CGFloat) -> some View {
+    private func cardsOnScreenView(for card: Card, size: CGFloat) -> some View {
         let isZoomed = zoomedCardIDs.contains(card.id)
         let isShaking = shakingCardIDs.contains(card.id)
 
-        ShapeItemView(viewModel: viewModel, shape: card)
+        CardsItemView(viewModel: viewModel, shape: card)
             .frame(width: size, height: size / (2 / 3))
             .scaleEffect(isZoomed ? 4 : 1)
             .modifier(ShakeEffect(animatableData: isShaking ? 1 : 0))
@@ -72,7 +77,11 @@ extension SetGameView {
             .shadow(radius: 2)
             .onTapGesture {
                 viewModel.choose(card)
-                AnimationView.makeAnimations(viewModel: viewModel, zoomedCardIDs: $zoomedCardIDs, shakingCardIDs: $shakingCardIDs)
+                AnimationView.makeAnimations(
+                    viewModel: viewModel,
+                    zoomedCardIDs: $zoomedCardIDs,
+                    shakingCardIDs: $shakingCardIDs
+                )
                 viewModel.flipCardsOnScreen()
             }
     }

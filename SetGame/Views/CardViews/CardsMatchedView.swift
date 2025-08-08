@@ -7,13 +7,14 @@
 
 import SwiftUI
 
+/// Displays the matched cards stack with animations,
+/// maintaining order and visual layering in the UI.
 extension SetGameView {
-    // MARK: View: Cards matched
     var matchedCards: some View {
         let reversedCards = Array(viewModel.cardsMatched.reversed())
         return ZStack {
             ForEach(reversedCards, id: \.id) { card in
-                ShapeItemView(viewModel: viewModel, shape: card)
+                CardsItemView(viewModel: viewModel, shape: card)
                     .frame(width: 60, height: 90)
                     .cornerRadius(10)
                     .matchedGeometryEffect(id: card.id, in: matchingNamespace)

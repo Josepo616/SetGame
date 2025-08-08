@@ -7,6 +7,8 @@
 
 import Foundation
 
+/// Card-related Enums and Structs - Defines the attributes and states of a card.
+/// Includes types, colors, shading, and count for card properties, as well as states like selection and match status.
 enum CardType: CaseIterable {
     case rhombus, rectangle, square
 }
