@@ -21,9 +21,9 @@ extension SetGameView {
             }
         }
     }
-    
+
     // MARK: Helpers for the remaining cards
-    
+
     private func cardViewRemaining(for card: Card) -> some View {
         ShapeItemView(viewModel: viewModel, shape: card)
             .frame(width: 60, height: 90)
@@ -36,15 +36,30 @@ extension SetGameView {
     }
 
     private func handleCardTapRemaining(for card: Card) {
-        var matchMakedInDealtCards: Bool = false
+        var tryMatchInCardsRemaining: Bool = false
         if viewModel.cardsOnScreen.filter({ $0.isSelected }).count == 3 {
-            viewModel.choose(viewModel.cardsOnScreen.last!)
-            if viewModel.validSet == true {
-                AnimationView.makeAnimations(viewModel: viewModel, zoomedCardIDs: $zoomedCardIDs, shakingCardIDs: $shakingCardIDs)
-                matchMakedInDealtCards = true
+            if let lastUnselectedCard = viewModel.cardsOnScreen.filter({
+                !$0.isSelected
+            }).last {
+                viewModel.choose(lastUnselectedCard)
             }
+            
+            if viewModel.validSet == true {
+                AnimationView.makeAnimations(
+                    viewModel: viewModel,
+                    zoomedCardIDs: $zoomedCardIDs,
+                    shakingCardIDs: $shakingCardIDs
+                )
+            } else if viewModel.validSet == false {
+                AnimationView.makeAnimations(
+                    viewModel: viewModel,
+                    zoomedCardIDs: $zoomedCardIDs,
+                    shakingCardIDs: $shakingCardIDs
+                )
+            }
+            tryMatchInCardsRemaining = true
         }
-        if matchMakedInDealtCards {
+        if tryMatchInCardsRemaining {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 withAnimation(.easeInOut(duration: 0.8)) {
                     for _ in 0..<3 {
